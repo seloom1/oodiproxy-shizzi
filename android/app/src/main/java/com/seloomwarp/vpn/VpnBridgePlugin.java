@@ -114,7 +114,6 @@ public class VpnBridgePlugin extends Plugin {
         service.putExtra(SeloomVpnService.EXTRA_MTU, call.getInt("mtu", 1280));
         service.putExtra(SeloomVpnService.EXTRA_KEEPALIVE, call.getInt("keepalive", 25));
         service.putExtra(SeloomVpnService.EXTRA_BYPASS_LAN, call.getBoolean("bypassLanRoute", false));
-        service.putExtra(SeloomVpnService.EXTRA_PROXY_TETHERING, call.getBoolean("proxyTethering", false));
         service.putExtra(SeloomVpnService.EXTRA_EXCLUDED_APPLICATIONS, joinApplications(call));
 
         Intent permission = VpnService.prepare(activity);

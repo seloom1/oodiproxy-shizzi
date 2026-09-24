@@ -1,8 +1,8 @@
 {
-  "version": "2.0.5",
-  "title": "إصلاح تشغيل Shizuku النهائي متوفر",
-  "message": "تم نقل نقطة UserService إلى داخل حزمة OODI الرئيسية حتى يتعرف عليها Shizuku بشكل مؤكد.",
-  "url": "https://github.com/seloom1/oodiproxy-shizzi/releases/download/v2.0.5/oodiproxy-shizzi-2.0.5-release.apk",
-  "publishedAt": "2026-09-24T22:30:00Z",
+  "version": "2.1.0",
+  "title": "واجهة بث Shizuku الجديدة متوفرة",
+  "message": "تم حذف دمج NetShare القديم واستبداله بواجهة Shizzi للبث عبر Shizuku بدون Root.",
+  "url": "https://github.com/seloom1/oodiproxy-shizzi/releases/download/v2.1.0/oodiproxy-shizzi-v2.1.0-debug.apk",
+  "publishedAt": "2026-09-24T23:35:00Z",
   "mandatory": false
 }

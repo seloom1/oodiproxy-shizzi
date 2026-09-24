@@ -11,7 +11,6 @@ public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         registerPlugin(VpnBridgePlugin.class);
-        registerPlugin(InternetSharingPlugin.class);
         registerPlugin(ShizziBridgePlugin.class);
         super.onCreate(savedInstanceState);
     }

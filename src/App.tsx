@@ -13,8 +13,6 @@ import { SettingsModal } from './components/SettingsModal';
 import { NavigationDrawer } from './components/NavigationDrawer';
 import { BalyBadge } from './components/BalyBadge';
 import { ConnectionHistoryModal } from './components/ConnectionHistoryModal';
-import { HotspotSettingsModal } from './components/HotspotSettingsModal';
-import { NetShareModal } from './components/NetShareModal';
 import { UpdateNotice } from './components/UpdateNotice';
 import { AppExclusionsModal } from './components/AppExclusionsModal';
 
@@ -23,7 +21,6 @@ import { getInitialServers, parseWireguardUri, USER_DEFAULT_URI } from './utils/
 import { measureRealPing } from './utils/realSpeed';
 import { fetchRealExternalIpAndCountry } from './utils/geoIp';
 import VpnBridge, { InstalledApp } from './utils/vpnBridge';
-import InternetSharing, { SharingStatus } from './utils/internetSharingBridge';
 import ShizziBridge from './utils/shizziBridge';
 import { AppUpdate, UPDATE_CHECK_INTERVAL_MS, checkForAppUpdate, markUpdateAsSeen, shouldShowUpdate } from './utils/updateService';
 
@@ -31,7 +28,6 @@ const STORAGE_SERVERS_KEY = 'seloomwarp_servers_v1';
 const STORAGE_SETTINGS_KEY = 'seloomwarp_settings_v1';
 const STORAGE_ACTIVE_SERVER_KEY = 'seloomwarp_active_id_v1';
 const STORAGE_CONNECTION_LOG_KEY = 'seloomwarp_connection_log_v1';
-const EMPTY_NETSHARE_STATUS: SharingStatus = { active: false, supported: false, ssid: '', proxyHost: '192.168.49.1', proxyPort: 8282, devices: [], downloadBytes: 0, uploadBytes: 0 };
 
 export default function App() {
   // 1. Servers state
@@ -65,7 +61,6 @@ export default function App() {
       dpiBypass: true,
       autoReconnect: true,
       bypassLanRoute: false,
-      proxyTethering: false,
       externalIp: '104.28.212.89',
       location: 'العراق (Baghdad)',
       country: 'العراق',
@@ -117,13 +112,9 @@ export default function App() {
   const [isPinging, setIsPinging] = useState(false);
   const [isLoadingIp, setIsLoadingIp] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-  const [isHotspotSettingsOpen, setIsHotspotSettingsOpen] = useState(false);
-  const [isNetShareOpen, setIsNetShareOpen] = useState(false);
-  const [netShareStatus, setNetShareStatus] = useState<SharingStatus>(EMPTY_NETSHARE_STATUS);
   const [availableUpdate, setAvailableUpdate] = useState<AppUpdate | null>(null);
   const [isAppExclusionsOpen, setIsAppExclusionsOpen] = useState(false);
   const [installedApplications, setInstalledApplications] = useState<InstalledApp[]>([]);
-  const [netShareTheme, setNetShareTheme] = useState<'cyan' | 'violet' | 'green'>(() => (localStorage.getItem('seloomwarp_netshare_theme') as 'cyan' | 'violet' | 'green') || 'cyan');
 
   // Active server object
   const activeServer = servers.find((s) => s.id === activeServerId) || servers[0];
@@ -137,14 +128,6 @@ export default function App() {
       }).catch(() => undefined);
     }, 0);
     return () => { cancelled = true; window.clearTimeout(timer); };
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    const refreshNetShare = () => { void InternetSharing.getStatus().then((next) => { if (!cancelled) setNetShareStatus(next); }).catch(() => undefined); };
-    refreshNetShare();
-    const timer = window.setInterval(refreshNetShare, 1500);
-    return () => { cancelled = true; window.clearInterval(timer); };
   }, []);
 
   useEffect(() => {
@@ -398,7 +381,6 @@ export default function App() {
           publicKey: activeServer.publicKey,
           allowedIPs: Array.isArray(activeServer.allowedIPs) ? activeServer.allowedIPs.join(',') : '0.0.0.0/0,::/0',
           bypassLanRoute: settings.bypassLanRoute,
-          proxyTethering: settings.proxyTethering,
           excludedApplications: settings.excludedApplications,
         });
         // The native service starts asynchronously. Do not mark the UI as connected
@@ -543,15 +525,12 @@ export default function App() {
             totalBytes={telemetry.uploadBytes + telemetry.downloadBytes}
             onRefreshIp={refreshRealIp}
             onOpenHistory={() => setIsHistoryOpen(true)}
-            onOpenInternetSharing={() => setIsNetShareOpen(true)}
+            onOpenShizzi={() => {
+              void ShizziBridge.open().catch(() => {
+                void ShizziBridge.openShizuku().catch(() => undefined);
+              });
+            }}
             isLoadingIp={isLoadingIp}
-            sharingActive={netShareStatus.active}
-            sharingDeviceCount={netShareStatus.devices.length}
-            sharingBytes={netShareStatus.downloadBytes + netShareStatus.uploadBytes}
-            sharingDownloadBytes={netShareStatus.downloadBytes}
-            sharingUploadBytes={netShareStatus.uploadBytes}
-            sharingTheme={netShareTheme}
-            onSharingThemeChange={(theme) => { setNetShareTheme(theme); localStorage.setItem('seloomwarp_netshare_theme', theme); }}
           />
         </BalyBadge>
 
@@ -603,18 +582,6 @@ export default function App() {
         onResetServers={handleResetServers}
       />
 
-      <HotspotSettingsModal
-        isOpen={isHotspotSettingsOpen}
-        onClose={() => setIsHotspotSettingsOpen(false)}
-        settings={settings}
-        onSaveSettings={setSettings}
-      />
-
-      <NetShareModal
-        isOpen={isNetShareOpen}
-        onClose={() => setIsNetShareOpen(false)}
-      />
-
       <ConnectionHistoryModal
         isOpen={isHistoryOpen}
         onClose={() => setIsHistoryOpen(false)}
@@ -629,7 +596,6 @@ export default function App() {
         onOpenAddServer={() => setIsAddServerOpen(true)}
         onOpenExport={() => handleOpenExport(activeServer)}
         onOpenSettings={() => setIsSettingsOpen(true)}
-        onOpenHotspotSettings={() => setIsHotspotSettingsOpen(true)}
         onOpenAppExclusions={() => setIsAppExclusionsOpen(true)}
         onOpenShizzi={() => {
           void ShizziBridge.open().catch(() => {
