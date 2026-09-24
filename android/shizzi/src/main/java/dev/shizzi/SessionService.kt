@@ -198,6 +198,7 @@ class SessionService : Service() {
     }
 
     private fun publishState() {
+        AutomationResult.announceState(this, internalState.value)
         notificationManager().notify(
             NOTIFICATION_ID,
             notification.build(internalState.value, isStopping),

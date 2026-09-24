@@ -16,6 +16,7 @@ object Automation {
     const val ACTION_QUERY_STATUS = "dev.shizzi.action.QUERY_STATUS"
 
     const val ACTION_RESULT = "dev.shizzi.action.SESSION_RESULT"
+    const val ACTION_SESSION_STATE = "dev.shizzi.action.SESSION_STATE"
 
     const val EXTRA_TOKEN = "token"
 

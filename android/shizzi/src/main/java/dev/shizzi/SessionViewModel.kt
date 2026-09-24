@@ -1,6 +1,11 @@
 package dev.shizzi
 
 import android.app.Application
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import dev.shizzi.ui.theme.AccentChoice
@@ -49,7 +54,39 @@ class SessionViewModel(application: Application) : AndroidViewModel(application)
 
     private var sessionCollector: Job? = null
 
+    private val sessionStateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action != Automation.ACTION_SESSION_STATE) return
+            val status = runCatching {
+                UiStatus.valueOf(intent.getStringExtra(Automation.EXTRA_STATUS).orEmpty())
+            }.getOrDefault(UiStatus.ERROR)
+            localState.update { current ->
+                current.copy(
+                    isBusy = status == UiStatus.LOADING,
+                    status = status,
+                    detail = intent.getStringExtra(Automation.EXTRA_DETAIL).orEmpty(),
+                    interfaceName = intent.getStringExtra(Automation.EXTRA_INTERFACE).orEmpty(),
+                    lastError = intent.getStringExtra(Automation.EXTRA_ERROR).orEmpty(),
+                    isVpnBound = false,
+                    isVpnBypassed = false,
+                    clientCount = intent.getIntExtra(Automation.EXTRA_CLIENT_COUNT, 0),
+                    traffic = Traffic(
+                        up = intent.getLongExtra(Automation.EXTRA_BYTES_UP, 0L),
+                        down = intent.getLongExtra(Automation.EXTRA_BYTES_DOWN, 0L),
+                    ),
+                )
+            }
+        }
+    }
+
     init {
+        val filter = IntentFilter(Automation.ACTION_SESSION_STATE)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            application.registerReceiver(sessionStateReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            @Suppress("DEPRECATION")
+            application.registerReceiver(sessionStateReceiver, filter)
+        }
         refreshShizukuState()
         refreshPermissions()
         observeSession()
@@ -127,7 +164,7 @@ class SessionViewModel(application: Application) : AndroidViewModel(application)
 
         runCatching {
             when {
-                SessionService.isSessionUp -> SessionService.stop(context)
+                localState.value.status == UiStatus.CONNECTED -> SessionService.stop(context)
                 else -> SessionService.start(context)
             }
         }.onFailure { failure ->
@@ -207,6 +244,7 @@ class SessionViewModel(application: Application) : AndroidViewModel(application)
 
     override fun onCleared() {
 
+        getApplication<Application>().unregisterReceiver(sessionStateReceiver)
         diagnostics.unbind()
         super.onCleared()
     }

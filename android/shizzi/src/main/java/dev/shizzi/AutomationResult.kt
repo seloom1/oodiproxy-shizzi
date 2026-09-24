@@ -5,6 +5,21 @@ import android.content.Intent
 
 object AutomationResult {
 
+    fun announceState(context: Context, state: SessionUiState) {
+        val intent = Intent(Automation.ACTION_SESSION_STATE).apply {
+            setPackage(context.packageName)
+            putExtra(Automation.EXTRA_STATUS, state.status.name)
+            putExtra(Automation.EXTRA_DETAIL, state.detail)
+            putExtra(Automation.EXTRA_INTERFACE, state.interfaceName)
+            putExtra(Automation.EXTRA_ERROR, state.lastError)
+            putExtra(Automation.EXTRA_IS_ACTIVE, state.status == UiStatus.CONNECTED)
+            putExtra(Automation.EXTRA_CLIENT_COUNT, state.clientCount)
+            putExtra(Automation.EXTRA_BYTES_UP, state.traffic.up)
+            putExtra(Automation.EXTRA_BYTES_DOWN, state.traffic.down)
+        }
+        context.sendBroadcast(intent)
+    }
+
     fun announce(context: Context, command: AutomationCommand, state: SessionUiState) {
         val intent = accepted(command).apply {
             putExtra(Automation.EXTRA_STATUS, state.status.name)
