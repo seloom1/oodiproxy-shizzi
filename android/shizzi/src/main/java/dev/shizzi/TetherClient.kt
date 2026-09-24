@@ -99,8 +99,11 @@ class TetherClient(private val context: Context) {
 
     private var deathRecipient: IBinder.DeathRecipient? = null
 
+    // Keep the same entry point used by the standalone Shizzi application.
+    // The package is supplied by the host APK, while TetherService itself is
+    // packaged from this module into that APK.
     private val userServiceArgs = Shizuku.UserServiceArgs(
-        ComponentName(context.packageName, HOST_USER_SERVICE_CLASS),
+        ComponentName(context.packageName, TetherService::class.java.name),
     )
 
         .daemon(true)
@@ -284,6 +287,5 @@ class TetherClient(private val context: Context) {
         const val AVAILABILITY_TIMEOUT_MS = 10_000
 
         private const val COMPATIBILITY_TIMEOUT_MS = 15_000L
-        private const val HOST_USER_SERVICE_CLASS = "com.seloomwarp.vpn.OodiTetherService"
     }
 }
