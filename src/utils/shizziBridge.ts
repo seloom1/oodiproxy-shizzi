@@ -9,6 +9,8 @@ export interface ShizziStatus {
 
 interface ShizziBridgePlugin {
   status(): Promise<ShizziStatus>;
+  batteryStatus(): Promise<{ exempt: boolean }>;
+  requestBatteryExemption(): Promise<void>;
   open(): Promise<void>;
   openShizuku(): Promise<void>;
 }

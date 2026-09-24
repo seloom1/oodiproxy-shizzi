@@ -1,8 +1,8 @@
 {
-  "version": "2.0.1",
-  "title": "إصلاح صلاحية البطارية متوفر",
-  "message": "تم إصلاح طلب استثناء تحسين البطارية وإضافة مسار احتياطي للأجهزة التي لا تفتح الطلب المباشر.",
-  "url": "https://github.com/seloom1/oodiproxy-shizzi/releases/download/v2.0.1/oodiproxy-shizzi-2.0.1-release.apk",
-  "publishedAt": "2026-09-24T22:00:00Z",
+  "version": "2.0.3",
+  "title": "صلاحيات Shizzi والبطارية متوفرة",
+  "message": "تم دمج صلاحيات Shizzi والبطارية داخل صلاحيات OODI، مع إصلاح تعليق Compatibility.",
+  "url": "https://github.com/seloom1/oodiproxy-shizzi/releases/download/v2.0.3/oodiproxy-shizzi-2.0.3-release.apk",
+  "publishedAt": "2026-09-24T22:15:00Z",
   "mandatory": false
 }

@@ -183,9 +183,11 @@ class TetherClient {
     }
 
     suspend fun checkCompatibility(): List<CapabilityResult> = withContext(Dispatchers.IO) {
-        val bound = service()
-        verifyContract(bound)
-        parseCapabilities(bound.checkCompatibility())
+        withTimeout(COMPATIBILITY_TIMEOUT_MS) {
+            val bound = service()
+            verifyContract(bound)
+            parseCapabilities(bound.checkCompatibility())
+        }
     }
 
     suspend fun installTetheringApex(path: String): StagingOutcome =
@@ -272,5 +274,7 @@ class TetherClient {
         const val BIND_TIMEOUT_MS = 35_000L
 
         const val AVAILABILITY_TIMEOUT_MS = 10_000
+
+        private const val COMPATIBILITY_TIMEOUT_MS = 15_000L
     }
 }

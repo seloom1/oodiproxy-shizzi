@@ -636,6 +636,11 @@ export default function App() {
             void ShizziBridge.openShizuku().catch(() => undefined);
           });
         }}
+        onOpenShizziPermissions={() => {
+          void ShizziBridge.requestBatteryExemption().catch(() => {
+            void ShizziBridge.open();
+          });
+        }}
         excludedAppsCount={settings.excludedApplications.length}
         isConnected={connectionState === 'connected'}
       />
