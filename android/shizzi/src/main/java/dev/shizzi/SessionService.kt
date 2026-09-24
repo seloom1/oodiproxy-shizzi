@@ -52,13 +52,28 @@ class SessionService : Service() {
         isStopping = intent?.action == ACTION_STOP
         reportTo = intent?.getStringExtra(EXTRA_REPORT_AS)
             ?.let { runCatching { AutomationCommand.valueOf(it) }.getOrNull() }
-        startForeground(
-            NOTIFICATION_ID,
-            notification.build(
-                SessionUiState(status = UiStatus.LOADING),
-                isStopping,
-            ),
-        )
+        runCatching {
+            startForeground(
+                NOTIFICATION_ID,
+                notification.build(
+                    SessionUiState(status = UiStatus.LOADING),
+                    isStopping,
+                ),
+            )
+        }.onFailure { failure ->
+            val detail = "${failure.javaClass.simpleName}: ${failure.message}"
+            SessionLog.error("foreground service failed: $detail")
+            internalState.update {
+                it.copy(
+                    isBusy = false,
+                    status = UiStatus.ERROR,
+                    lastError = detail,
+                    detail = "Foreground service could not start",
+                )
+            }
+            stopSelf(startId)
+            return START_NOT_STICKY
+        }
 
         when {
             isStopping -> stopSession()

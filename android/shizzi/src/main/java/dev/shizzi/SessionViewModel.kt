@@ -125,9 +125,22 @@ class SessionViewModel(application: Application) : AndroidViewModel(application)
     fun toggle() {
         val context = getApplication<Application>()
 
-        when {
-            SessionService.isSessionUp -> SessionService.stop(context)
-            else -> SessionService.start(context)
+        runCatching {
+            when {
+                SessionService.isSessionUp -> SessionService.stop(context)
+                else -> SessionService.start(context)
+            }
+        }.onFailure { failure ->
+            val detail = "${failure.javaClass.simpleName}: ${failure.message}"
+            SessionLog.error("could not start Shizzi session: $detail")
+            localState.update {
+                it.copy(
+                    isBusy = false,
+                    status = UiStatus.ERROR,
+                    lastError = detail,
+                    detail = "Session could not be started",
+                )
+            }
         }
     }
 
