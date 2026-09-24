@@ -17,7 +17,7 @@ export interface AppUpdate {
 }
 
 export const UPDATE_MANIFEST_URL = 'https://raw.githubusercontent.com/seloom1/oodiproxy-shizzi/main/updates.json';
-export const CURRENT_APP_VERSION = '2.0.4';
+export const CURRENT_APP_VERSION = '2.0.5';
 export const UPDATE_CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000;
 const LAST_SEEN_UPDATE_KEY = 'oodi_last_update_version_v1';
 

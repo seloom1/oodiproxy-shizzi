@@ -1,8 +1,8 @@
 {
-  "version": "2.0.4",
-  "title": "إصلاح تشغيل Shizuku متوفر",
-  "message": "تم تصحيح اسم حزمة UserService وإظهار رسالة مباشرة عند عدم تشغيل Shizuku أو عدم منح الصلاحية.",
-  "url": "https://github.com/seloom1/oodiproxy-shizzi/releases/download/v2.0.4/oodiproxy-shizzi-2.0.4-release.apk",
-  "publishedAt": "2026-09-24T22:25:00Z",
+  "version": "2.0.5",
+  "title": "إصلاح تشغيل Shizuku النهائي متوفر",
+  "message": "تم نقل نقطة UserService إلى داخل حزمة OODI الرئيسية حتى يتعرف عليها Shizuku بشكل مؤكد.",
+  "url": "https://github.com/seloom1/oodiproxy-shizzi/releases/download/v2.0.5/oodiproxy-shizzi-2.0.5-release.apk",
+  "publishedAt": "2026-09-24T22:30:00Z",
   "mandatory": false
 }

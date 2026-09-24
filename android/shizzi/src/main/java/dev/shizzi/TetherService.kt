@@ -6,7 +6,7 @@ import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.util.Log
 
-class TetherService : ITetherService.Stub {
+open class TetherService : ITetherService.Stub {
 
     private val context: Context
 
