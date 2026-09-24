@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -93,6 +94,9 @@ class SessionService : Service() {
         internalState.update {
             it.copy(isBusy = true, status = UiStatus.LOADING, lastError = "", detail = "")
         }
+        // This service runs in a separate process; publish immediately so the
+        // main OODI process can show that Start was accepted.
+        publishState()
 
         startJob = scope.launch {
 
@@ -100,7 +104,11 @@ class SessionService : Service() {
 
             val outcome = sessionLock.withLock {
                 if (attempt != generation) return@launch
-                runCatching { controller.start(settings.isLogging, settings.vpnMode) }
+                runCatching {
+                    withTimeout(45_000L) {
+                        controller.start(settings.isLogging, settings.vpnMode)
+                    }
+                }
             }
             if (attempt != generation) return@launch
 
