@@ -22,6 +22,7 @@ import { measureRealPing } from './utils/realSpeed';
 import { fetchRealExternalIpAndCountry } from './utils/geoIp';
 import VpnBridge, { InstalledApp } from './utils/vpnBridge';
 import ShizziBridge from './utils/shizziBridge';
+import { CellularInfo, EMPTY_CELLULAR_INFO, readCellularInfo } from './utils/cellularInfo';
 import { AppUpdate, UPDATE_CHECK_INTERVAL_MS, checkForAppUpdate, markUpdateAsSeen, shouldShowUpdate } from './utils/updateService';
 
 const STORAGE_SERVERS_KEY = 'seloomwarp_servers_v1';
@@ -115,6 +116,8 @@ export default function App() {
   const [availableUpdate, setAvailableUpdate] = useState<AppUpdate | null>(null);
   const [isAppExclusionsOpen, setIsAppExclusionsOpen] = useState(false);
   const [installedApplications, setInstalledApplications] = useState<InstalledApp[]>([]);
+  const [cellularInfo, setCellularInfo] = useState<CellularInfo>(EMPTY_CELLULAR_INFO);
+  const [isLoadingCellular, setIsLoadingCellular] = useState(false);
 
   // Active server object
   const activeServer = servers.find((s) => s.id === activeServerId) || servers[0];
@@ -150,6 +153,21 @@ export default function App() {
     };
     void checkUpdate();
     const timer = window.setInterval(() => { void checkUpdate(); }, UPDATE_CHECK_INTERVAL_MS);
+    return () => { cancelled = true; window.clearInterval(timer); };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const refreshCellular = async () => {
+      setIsLoadingCellular(true);
+      const info = await readCellularInfo();
+      if (!cancelled) {
+        setCellularInfo(info);
+        setIsLoadingCellular(false);
+      }
+    };
+    void refreshCellular();
+    const timer = window.setInterval(() => { void refreshCellular(); }, 10000);
     return () => { cancelled = true; window.clearInterval(timer); };
   }, []);
 
@@ -523,6 +541,8 @@ export default function App() {
             countryFlag={settings.countryFlag || '🇮🇶'}
             isConnected={connectionState === 'connected'}
             totalBytes={telemetry.uploadBytes + telemetry.downloadBytes}
+            cellularInfo={cellularInfo}
+            onRefreshCellular={() => { void readCellularInfo().then(setCellularInfo); }}
             onRefreshIp={refreshRealIp}
             onOpenHistory={() => setIsHistoryOpen(true)}
             onOpenShizzi={() => {
@@ -531,6 +551,7 @@ export default function App() {
               });
             }}
             isLoadingIp={isLoadingIp}
+            isLoadingCellular={isLoadingCellular}
           />
         </BalyBadge>
 

@@ -12,6 +12,7 @@ public class MainActivity extends BridgeActivity {
     public void onCreate(Bundle savedInstanceState) {
         registerPlugin(VpnBridgePlugin.class);
         registerPlugin(ShizziBridgePlugin.class);
+        registerPlugin(CellularInfoPlugin.class);
         super.onCreate(savedInstanceState);
     }
 }
