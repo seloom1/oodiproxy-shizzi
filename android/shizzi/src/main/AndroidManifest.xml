@@ -12,7 +12,7 @@
 
     <application>
         <activity android:name="dev.shizzi.MainActivity" android:exported="false" android:label="Shizzi Hotspot" />
-        <service android:name="dev.shizzi.SessionService" android:exported="false" android:foregroundServiceType="specialUse">
+        <service android:name="dev.shizzi.SessionService" android:process=":shizzi_session" android:exported="false" android:foregroundServiceType="specialUse">
             <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" android:value="Maintains a protected tethering session and tears down the hotspot if the privileged helper process dies" />
         </service>
         <service android:name="dev.shizzi.SessionTileService" android:exported="true" android:icon="@drawable/ic_tile_tethering" android:label="Shizzi Hotspot" android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
