@@ -12,6 +12,7 @@ import android.telephony.TelephonyManager;
 import androidx.annotation.NonNull;
 
 import com.getcapacitor.JSObject;
+import com.getcapacitor.PermissionState;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.annotation.CapacitorPlugin;
