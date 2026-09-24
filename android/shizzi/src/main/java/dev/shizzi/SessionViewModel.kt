@@ -24,7 +24,7 @@ import kotlinx.coroutines.withContext
 
 class SessionViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val diagnostics = TetherClient(application)
+    private val diagnostics = TetherClient()
 
     private val settingsStore = getApplication<App>().settingsStore
 

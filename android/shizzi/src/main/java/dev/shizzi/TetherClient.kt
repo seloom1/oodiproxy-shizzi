@@ -1,7 +1,6 @@
 package dev.shizzi
 
 import android.content.ComponentName
-import android.content.Context
 import android.content.ServiceConnection
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
@@ -90,7 +89,7 @@ private fun statusFor(sessionState: String): UiStatus = when (sessionState) {
     else -> UiStatus.READY
 }
 
-class TetherClient(private val context: Context) {
+class TetherClient {
 
     private var boundService: ITetherService? = null
     private var pendingBind: CompletableDeferred<ITetherService>? = null
@@ -99,11 +98,8 @@ class TetherClient(private val context: Context) {
 
     private var deathRecipient: IBinder.DeathRecipient? = null
 
-    // Keep the same entry point used by the standalone Shizzi application.
-    // The package is supplied by the host APK, while TetherService itself is
-    // packaged from this module into that APK.
     private val userServiceArgs = Shizuku.UserServiceArgs(
-        ComponentName(context.packageName, TetherService::class.java.name),
+        ComponentName(BuildConfig.APPLICATION_ID, TetherService::class.java.name),
     )
 
         .daemon(true)
@@ -135,13 +131,6 @@ class TetherClient(private val context: Context) {
     }
 
     private suspend fun service(): ITetherService {
-        check(Shizuku.pingBinder()) {
-            "Shizuku is not running. Start Shizuku with Wireless debugging or Root, then grant OODI Proxy Shizzi permission."
-        }
-        check(Shizuku.checkSelfPermission() == android.content.pm.PackageManager.PERMISSION_GRANTED) {
-            "Shizuku permission is not granted for ${context.packageName}. Open Shizuku and allow this app."
-        }
-
         boundService?.let { existing ->
             if (existing.asBinder().pingBinder()) return existing
             boundService = null
