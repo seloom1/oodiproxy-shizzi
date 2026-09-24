@@ -1,8 +1,8 @@
 {
-  "version": "2.0.3",
-  "title": "صلاحيات Shizzi والبطارية متوفرة",
-  "message": "تم دمج صلاحيات Shizzi والبطارية داخل صلاحيات OODI، مع إصلاح تعليق Compatibility.",
-  "url": "https://github.com/seloom1/oodiproxy-shizzi/releases/download/v2.0.3/oodiproxy-shizzi-2.0.3-release.apk",
-  "publishedAt": "2026-09-24T22:15:00Z",
+  "version": "2.0.4",
+  "title": "إصلاح تشغيل Shizuku متوفر",
+  "message": "تم تصحيح اسم حزمة UserService وإظهار رسالة مباشرة عند عدم تشغيل Shizuku أو عدم منح الصلاحية.",
+  "url": "https://github.com/seloom1/oodiproxy-shizzi/releases/download/v2.0.4/oodiproxy-shizzi-2.0.4-release.apk",
+  "publishedAt": "2026-09-24T22:25:00Z",
   "mandatory": false
 }

@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 class SessionService : Service() {
 
     private val scope = CoroutineScope(SupervisorJob())
-    private val controller = TetherClient()
+    private val controller by lazy { TetherClient(this) }
     private val notification by lazy { SessionNotification(this) }
     private val statusPoller = SessionStatusPoller(scope, controller)
 
