@@ -3,7 +3,7 @@
 <p align="center">
   <a href="https://github.com/seloom1/oodiproxy-shizzi/releases"><img src="https://img.shields.io/github/v/release/seloom1/oodiproxy-shizzi?style=for-the-badge&color=00d9ff" alt="Latest release" /></a>
   <a href="https://github.com/seloom1/oodiproxy-shizzi/releases"><img src="https://img.shields.io/badge/Android-API%2030%2B-3ddc84?style=for-the-badge&logo=android&logoColor=white" alt="Android API 30+" /></a>
-  <a href="https://github.com/seloom1/oodiproxy-shizzi/releases"><img src="https://img.shields.io/github/downloads/seloom1/oodiproxy-shizzi/v2.0/total?style=for-the-badge&color=bf5af2" alt="Downloads" /></a>
+  <a href="https://github.com/seloom1/oodiproxy-shizzi/releases"><img src="https://img.shields.io/github/downloads/seloom1/oodiproxy-shizzi/v2.1.0/total?style=for-the-badge&color=bf5af2" alt="Downloads" /></a>
 </p>
 
 <p align="center">
@@ -14,13 +14,19 @@
 
 ## 🌐 نبذة عن المشروع
 
-**OODI Proxy Seloom1** هو تطبيق Android مبني على Capacitor وWireGuard لتوفير واجهة عربية عملية لإدارة اتصالات VPN، مع دعم مشاركة اتصال VPN مع الأجهزة الأخرى، مراقبة الاستخدام، وإدارة خوادم WireGuard من مكان واحد.
+**OODI Proxy Seloom1** هو تطبيق Android مبني على Capacitor وWireGuard لتوفير واجهة عربية عملية لإدارة اتصالات VPN، مع دعم مشاركة اتصال الإنترنت عبر Shizuku بدون Root، مراقبة الاستخدام، وإدارة خوادم WireGuard من مكان واحد.
 
 التطبيق مصمم ليكون خفيفاً وقابلاً للتوسع، ويستخدم Package Name مستقل:
 
 ```text
 com.oodiproxyseloom1.shizzi
 ```
+
+## 🆕 آخر تحديث — v2.1.0
+
+يتضمن هذا الإصدار إضافة مشاركة الإنترنت عبر Shizuku بعد حذف ميزة NetShare، مع إضافة قياس قوة إشارة الشريحة وتحسين معلومات الشبكة.
+
+كما يتضمن إصلاحات مهمة لاتصال وفصل VPN وWireGuard، وتحسين DNS وAllowedIPs، ومنع مشاكل IPv6 وDNS IPv6 مع الخوادم التي لا تدعمها، إضافةً إلى تحسين استقرار الخدمة في الخلفية واستثناء التطبيقات وتجربة الاستخدام بشكل عام.
 
 ## ✨ الميزات الحالية
 
@@ -48,9 +54,9 @@ com.oodiproxyseloom1.shizzi
 - تمرير القائمة فعلياً إلى WireGuard عبر `ExcludedApplications`، وليس مجرد إعداد شكلي.
 - حفظ التطبيقات المختارة محلياً وإعادة استخدامها عند الاتصال التالي.
 
-### 📡 مشاركة الإنترنت وHotspot
+### 📡 مشاركة الإنترنت وHotspot عبر Shizuku
 
-- مشاركة اتصال VPN مع الأجهزة المتصلة عبر Hotspot.
+- مشاركة اتصال الإنترنت مع الأجهزة المتصلة عبر Hotspot باستخدام Shizuku بدون Root.
 - دعم Wi-Fi وUSB Tethering حسب إمكانيات الجهاز.
 - عرض عدد الأجهزة المتصلة.
 - عرض إجمالي البيانات المستخدمة في المشاركة.
@@ -68,6 +74,8 @@ com.oodiproxyseloom1.shizzi
 - ظهور التطبيق داخل تطبيق Shizuku ومنحه الصلاحية من هناك.
 - دعم Quick Settings Tile وأوامر التشغيل والإيقاف والأتمتة الموجودة في Shizzi.
 
+تم حذف ميزة NetShare من التطبيق واستبدالها بمكوّن Shizuku المدمج.
+
 > يجب تثبيت تطبيق **Shizuku** وتشغيله أولاً عبر Wireless Debugging أو Root، ثم فتح خيار Shizzi داخل OODI ومنح الصلاحية من تطبيق Shizuku. هذه النسخة تتطلب Android 11 / API 30 أو أحدث ومعمارية ARM64.
 
 ### 📊 الإحصائيات والمراقبة
@@ -78,6 +86,7 @@ com.oodiproxyseloom1.shizzi
 - قراءة إحصائيات WireGuard الحقيقية بدلاً من أرقام تجريبية.
 - سجل للاتصالات السابقة مع إمكانية مسحه.
 - تحديث معلومات الشبكة يدوياً عند الحاجة.
+- قياس قوة إشارة الشريحة وعرض معلومات SIM والشبكة الخلوية.
 
 ### 🎨 الواجهة وتجربة الاستخدام
 
@@ -93,16 +102,16 @@ com.oodiproxyseloom1.shizzi
 | العنصر | القيمة |
 |---|---|
 | Package Name | `com.oodiproxyseloom1.shizzi` |
-| Version Name | `2.0` |
-| Version Code | `6` |
+| Version Name | `2.1.0` |
+| Version Code | `16` |
 | Minimum Android | API 30 / Android 11 |
 | Target SDK | API 36 |
-| Release | [v2.0 على GitHub](https://github.com/seloom1/oodiproxy-shizzi/releases/tag/v2.0) |
+| Release | [v2.1.0 على GitHub](https://github.com/seloom1/oodiproxy-shizzi/releases/tag/v2.1.0) |
 
 ## ⬇️ التحميل
 
-- [تحميل Release APK](https://github.com/seloom1/oodiproxy-shizzi/releases/download/v2.0/oodiproxy-shizzi-2.0-release.apk)
-- [تحميل Debug APK](https://github.com/seloom1/oodiproxy-shizzi/releases/download/v2.0/oodiproxy-shizzi-2.0-debug.apk)
+- [تحميل Release APK](https://github.com/seloom1/oodiproxy-shizzi/releases/download/v2.1.0/oodiproxy-shizzi-v2.1.0-release.apk)
+- [تحميل Debug APK](https://github.com/seloom1/oodiproxy-shizzi/releases/download/v2.1.0/oodiproxy-shizzi-v2.1.0-debug.apk)
 
 > نسخة Release الحالية موقعة بمفتاح اختبار للتجربة. للنشر الرسمي يجب استخدام مفتاح توقيع ثابت والاحتفاظ به لجميع الإصدارات اللاحقة.
 
@@ -134,15 +143,14 @@ android/app/build/outputs/apk/release/
 
 ## 🇬🇧 English summary
 
-OODI Proxy Seloom1 is an Arabic RTL Android WireGuard client built with Capacitor. It provides multi-server management, native WireGuard connectivity, hotspot sharing, traffic statistics, app exclusions with searchable app icons, local settings, and a GitHub-hosted in-app update manifest.
+OODI Proxy Seloom1 is an Arabic RTL Android WireGuard client built with Capacitor. It provides multi-server management, native WireGuard connectivity, Shizuku-based hotspot sharing without root, traffic statistics, SIM signal information, app exclusions with searchable app icons, local settings, and a GitHub-hosted in-app update manifest.
 
-The current standalone application ID is `com.oodiproxyseloom1.shizzi`, version `2.0`, with Android API 30 as the minimum supported version and API 36 as the target SDK.
+The current standalone application ID is `com.oodiproxyseloom1.shizzi`, version `2.1.0`, with Android API 30 as the minimum supported version and API 36 as the target SDK.
 
 ## 🙌 Credits
 
 ### 🤝 المشاريع والمكونات المشتركة
 
-- **NetShare No Root** — الإلهام والمكوّنات المرتبطة بمشاركة اتصال الإنترنت عبر Hotspot وProxy بدون Root.
 - **WireGuard** — تقنية نفق VPN مفتوحة المصدر والمكوّن الأساسي للاتصال المشفر.
 - **WireGuard Android Tunnel** — مكتبة Android لتشغيل النفق وإدارته وقراءة إحصائياته.
 - **Capacitor** — الجسر المستخدم لربط واجهة React/TypeScript بخدمات Android الأصلية.
