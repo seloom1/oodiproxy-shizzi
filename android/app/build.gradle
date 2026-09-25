@@ -3,6 +3,19 @@ apply plugin: 'com.android.application'
 android {
     namespace = "com.seloomwarp.vpn"
     compileSdk = rootProject.ext.compileSdkVersion
+    signingConfigs {
+        release {
+            // For CI/store builds, provide RELEASE_KEYSTORE_PATH,
+            // RELEASE_KEY_ALIAS, RELEASE_STORE_PASSWORD and RELEASE_KEY_PASSWORD.
+            def releaseKeystorePath = System.getenv('RELEASE_KEYSTORE_PATH')
+            if (releaseKeystorePath) {
+                storeFile file(releaseKeystorePath)
+                storePassword System.getenv('RELEASE_STORE_PASSWORD')
+                keyAlias System.getenv('RELEASE_KEY_ALIAS')
+                keyPassword System.getenv('RELEASE_KEY_PASSWORD')
+            }
+        }
+    }
     defaultConfig {
         applicationId "com.oodiproxyseloom1.shizzi"
         minSdkVersion 30
@@ -20,6 +33,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // Never emit an unsigned APK. Without release credentials this is
+            // signed with the debug key for local installation only.
+            signingConfig System.getenv('RELEASE_KEYSTORE_PATH') ? signingConfigs.release : signingConfigs.debug
         }
     }
 }
