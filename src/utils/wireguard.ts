@@ -69,7 +69,9 @@ export function parseWireguardUri(uriString: string): WireguardServer {
     .map(a => decodeURIComponent(a).trim())
     .filter(Boolean);
 
-  const rawDns = params.get('dns') || '1.1.1.1, 2606:4700:4700::1111';
+  // Keep DNS IPv4-only by default. IPv6 DNS is opt-in for peers that
+  // explicitly provide IPv6 routing and an IPv6 interface address.
+  const rawDns = params.get('dns') || '1.1.1.1, 1.0.0.1';
   const dns = rawDns
     .split(',')
     .map(d => decodeURIComponent(d).trim())

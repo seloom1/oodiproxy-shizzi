@@ -36,10 +36,21 @@ function normalizeStoredServers(value: unknown): WireguardServer[] | null {
     const hasIpv6Address = Array.isArray(item.addresses)
       && item.addresses.some((address) => address.includes(':'));
     const allowed = Array.isArray(item.allowedIPs) ? item.allowedIPs : [];
+    const dns = Array.isArray(item.dns) ? item.dns : [];
+    const normalizedRoutes = !hasIpv6Address && allowed.includes('::/0')
+      ? allowed.filter((route) => route !== '::/0')
+      : allowed;
+    const normalizedDns = !hasIpv6Address
+      ? dns.filter((serverAddress) => !serverAddress.includes(':'))
+      : dns;
     // Migrate the old implicit IPv4+IPv6 default only when the peer itself
     // has no IPv6 address. Explicit IPv6-capable configurations are preserved.
-    if (!hasIpv6Address && allowed.includes('::/0')) {
-      return { ...item, allowedIPs: allowed.filter((route) => route !== '::/0') };
+    if (normalizedRoutes !== allowed || normalizedDns !== dns) {
+      return {
+        ...item,
+        allowedIPs: normalizedRoutes,
+        dns: normalizedDns.length ? normalizedDns : ['1.1.1.1', '1.0.0.1'],
+      };
     }
     return item;
   });
