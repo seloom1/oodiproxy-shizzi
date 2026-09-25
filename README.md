@@ -10,7 +10,7 @@
   <img src="docs/images/upcoming-features.png" alt="ميزات تطبيق OODI Proxy Seloom1" width="520" />
 </p>
 
-<p align="center"><strong>تجربة أسرع، تحكم أفضل، واتصال WireGuard أكثر مرونة.</strong></p>
+<p align="center"><strong>اتصال WireGuard أكثر استقراراً، مشاركة Shizuku، وتحكم أفضل بالشبكة.</strong></p>
 
 ## 🌐 نبذة عن المشروع
 
@@ -113,7 +113,7 @@ com.oodiproxyseloom1.shizzi
 - [تحميل Release APK](https://github.com/seloom1/oodiproxy-shizzi/releases/download/v2.1.0/oodiproxy-shizzi-v2.1.0-release.apk)
 - [تحميل Debug APK](https://github.com/seloom1/oodiproxy-shizzi/releases/download/v2.1.0/oodiproxy-shizzi-v2.1.0-debug.apk)
 
-> نسخة Release الحالية موقعة بمفتاح اختبار للتجربة. للنشر الرسمي يجب استخدام مفتاح توقيع ثابت والاحتفاظ به لجميع الإصدارات اللاحقة.
+> نسخة Release الحالية موقعة للتجربة المحلية. للنشر الرسمي على Google Play يجب استخدام keystore ثابت ومفتاح رفع محفوظ بشكل آمن، ويفضل رفع ملف Android App Bundle بصيغة `.aab`.
 
 ## 🧰 البناء محلياً
 
