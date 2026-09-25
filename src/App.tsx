@@ -28,14 +28,31 @@ const STORAGE_SETTINGS_KEY = 'seloomwarp_settings_v1';
 const STORAGE_ACTIVE_SERVER_KEY = 'seloomwarp_active_id_v1';
 const STORAGE_CONNECTION_LOG_KEY = 'seloomwarp_connection_log_v1';
 
+function normalizeStoredServers(value: unknown): WireguardServer[] | null {
+  if (!Array.isArray(value) || value.length === 0) return null;
+  return value.map((server) => {
+    if (!server || typeof server !== 'object') return server as WireguardServer;
+    const item = server as WireguardServer;
+    const hasIpv6Address = Array.isArray(item.addresses)
+      && item.addresses.some((address) => address.includes(':'));
+    const allowed = Array.isArray(item.allowedIPs) ? item.allowedIPs : [];
+    // Migrate the old implicit IPv4+IPv6 default only when the peer itself
+    // has no IPv6 address. Explicit IPv6-capable configurations are preserved.
+    if (!hasIpv6Address && allowed.includes('::/0')) {
+      return { ...item, allowedIPs: allowed.filter((route) => route !== '::/0') };
+    }
+    return item;
+  });
+}
+
 export default function App() {
   // 1. Servers state
   const [servers, setServers] = useState<WireguardServer[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_SERVERS_KEY);
       if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        const parsed = normalizeStoredServers(JSON.parse(saved));
+        if (parsed) return parsed;
       }
     } catch {
       // fallback
@@ -381,7 +398,7 @@ export default function App() {
           address: Array.isArray(activeServer.addresses) ? activeServer.addresses.join(',') : (activeServer.addresses || '172.16.0.2/32'),
           privateKey: activeServer.privateKey,
           publicKey: activeServer.publicKey,
-          allowedIPs: Array.isArray(activeServer.allowedIPs) ? activeServer.allowedIPs.join(',') : '0.0.0.0/0,::/0',
+          allowedIPs: Array.isArray(activeServer.allowedIPs) ? activeServer.allowedIPs.join(',') : '0.0.0.0/0',
           bypassLanRoute: settings.bypassLanRoute,
           excludedApplications: settings.excludedApplications,
         });

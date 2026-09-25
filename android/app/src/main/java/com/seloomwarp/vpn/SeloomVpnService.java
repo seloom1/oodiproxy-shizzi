@@ -123,7 +123,8 @@ public class SeloomVpnService extends VpnService {
                 String endpoint = required(intent, EXTRA_ENDPOINT);
                 String address = cleanAddresses(intent.getStringExtra(EXTRA_ADDRESS), "172.16.0.2/32,2606:4700:110:8d70:8df1:6e3d:693b:ea40/128");
                 String dns = cleanList(intent.getStringExtra(EXTRA_DNS), "1.1.1.1");
-                String allowedIPs = cleanList(intent.getStringExtra(EXTRA_ALLOWED_IPS), "0.0.0.0/0,::/0");
+                // Keep IPv6 opt-in; IPv4-only peers must not receive ::/0.
+                String allowedIPs = cleanList(intent.getStringExtra(EXTRA_ALLOWED_IPS), "0.0.0.0/0");
                 String excludedApplications = cleanPackageList(intent.getStringExtra(EXTRA_EXCLUDED_APPLICATIONS));
                 boolean bypassLan = intent.getBooleanExtra(EXTRA_BYPASS_LAN, false);
                 int mtu = validMtu(intent.getIntExtra(EXTRA_MTU, 1280));
