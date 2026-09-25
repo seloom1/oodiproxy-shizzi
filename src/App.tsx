@@ -13,7 +13,6 @@ import { SettingsModal } from './components/SettingsModal';
 import { NavigationDrawer } from './components/NavigationDrawer';
 import { BalyBadge } from './components/BalyBadge';
 import { ConnectionHistoryModal } from './components/ConnectionHistoryModal';
-import { UpdateNotice } from './components/UpdateNotice';
 import { AppExclusionsModal } from './components/AppExclusionsModal';
 
 import { WireguardServer, ConnectionState, AppSettings, NetworkTelemetry, ConnectionLogEntry } from './types';
@@ -23,7 +22,6 @@ import { fetchRealExternalIpAndCountry } from './utils/geoIp';
 import VpnBridge, { InstalledApp } from './utils/vpnBridge';
 import ShizziBridge from './utils/shizziBridge';
 import { CellularInfo, EMPTY_CELLULAR_INFO, readCellularInfo } from './utils/cellularInfo';
-import { AppUpdate, UPDATE_CHECK_INTERVAL_MS, checkForAppUpdate, markUpdateAsSeen, shouldShowUpdate } from './utils/updateService';
 
 const STORAGE_SERVERS_KEY = 'seloomwarp_servers_v1';
 const STORAGE_SETTINGS_KEY = 'seloomwarp_settings_v1';
@@ -113,7 +111,6 @@ export default function App() {
   const [isPinging, setIsPinging] = useState(false);
   const [isLoadingIp, setIsLoadingIp] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-  const [availableUpdate, setAvailableUpdate] = useState<AppUpdate | null>(null);
   const [isAppExclusionsOpen, setIsAppExclusionsOpen] = useState(false);
   const [installedApplications, setInstalledApplications] = useState<InstalledApp[]>([]);
   const [cellularInfo, setCellularInfo] = useState<CellularInfo>(EMPTY_CELLULAR_INFO);
@@ -135,25 +132,12 @@ export default function App() {
 
   useEffect(() => {
     let cancelled = false;
-    void VpnBridge.listApplications().then(({ applications }) => {
-      if (!cancelled) setInstalledApplications(applications);
-    }).catch(() => undefined);
-    return () => { cancelled = true; };
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    const checkUpdate = async () => {
-      try {
-        const update = await checkForAppUpdate();
-        if (!cancelled && update && shouldShowUpdate(update.version)) setAvailableUpdate(update);
-      } catch {
-        // The update check must never interrupt VPN controls.
-      }
-    };
-    void checkUpdate();
-    const timer = window.setInterval(() => { void checkUpdate(); }, UPDATE_CHECK_INTERVAL_MS);
-    return () => { cancelled = true; window.clearInterval(timer); };
+    const timer = window.setTimeout(() => {
+      void VpnBridge.listApplications().then(({ applications }) => {
+        if (!cancelled) setInstalledApplications(applications);
+      }).catch(() => undefined);
+    }, 750);
+    return () => { cancelled = true; window.clearTimeout(timer); };
   }, []);
 
   useEffect(() => {
@@ -166,9 +150,9 @@ export default function App() {
         setIsLoadingCellular(false);
       }
     };
-    void refreshCellular();
+    const initialTimer = window.setTimeout(() => { void refreshCellular(); }, 1000);
     const timer = window.setInterval(() => { void refreshCellular(); }, 10000);
-    return () => { cancelled = true; window.clearInterval(timer); };
+    return () => { cancelled = true; window.clearTimeout(initialTimer); window.clearInterval(timer); };
   }, []);
 
   // Save servers to localStorage
@@ -640,13 +624,6 @@ export default function App() {
         onSave={(packages) => setSettings((current) => ({ ...current, excludedApplications: packages }))}
       />
 
-      <UpdateNotice
-        update={availableUpdate}
-        onDismiss={() => {
-          if (availableUpdate) markUpdateAsSeen(availableUpdate.version);
-          setAvailableUpdate(null);
-        }}
-      />
     </div>
   );
 }

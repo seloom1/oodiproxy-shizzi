@@ -1,8 +1,0 @@
-{
-  "version": "2.1.0",
-  "title": "واجهة بث Shizuku الجديدة متوفرة",
-  "message": "تم حذف دمج NetShare القديم واستبداله بواجهة Shizzi للبث عبر Shizuku بدون Root.",
-  "url": "https://github.com/seloom1/oodiproxy-shizzi/releases/download/v2.1.0/oodiproxy-shizzi-v2.1.0-debug.apk",
-  "publishedAt": "2026-09-24T23:35:00Z",
-  "mandatory": false
-}
